@@ -20,8 +20,8 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
   const FlutterTranslateGen();
 
   @override
-  Future<String> generateForAnnotatedElement(
-      Element element, ConstantReader annotation, BuildStep buildStep) async {
+  Future<String> generateForAnnotatedElement(Element element,
+      ConstantReader annotation, BuildStep buildStep) async {
     validateClass(element);
 
     final options = parseOptions(annotation);
@@ -38,7 +38,8 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
       throw InvalidGenerationSourceError("Ths JSON format is invalid.");
     }
 
-    final file = Library((lb) => lb
+    final file = Library((lb) =>
+    lb
       ..body.addAll([
         KeysClassGenerator.generateClass(options, translations, className!)
       ]));
@@ -52,7 +53,10 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
 
   TranslateKeysOptions parseOptions(ConstantReader annotation) {
     final caseStyle = enumFromString(CaseStyle.values,
-            annotation.peek("caseStyle")?.revive().accessor) ??
+        annotation
+            .peek("caseStyle")
+            ?.revive()
+            .accessor) ??
         CaseStyle.titleCase;
 
     return TranslateKeysOptions(
@@ -61,16 +65,16 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
         separator: annotation.peek("separator")!.stringValue);
   }
 
-  Future<List<LocalizedItem>> getKeyMap(
-      BuildStep step, TranslateKeysOptions options) async {
+  Future<List<LocalizedItem>> getKeyMap(BuildStep step,
+      TranslateKeysOptions options) async {
     var mapping = <String, List<String>>{};
 
     var assets =
-        await step.findAssets(Glob(options.path, recursive: true)).toList();
+    await step.findAssets(Glob(options.path, recursive: true)).toList();
 
     for (var entity in assets) {
       Map<String, dynamic> jsonMap =
-          json.decode(await step.readAsString(entity));
+      json.decode(await step.readAsString(entity));
 
       var translationMap = getTranslationMap(jsonMap);
 
@@ -80,8 +84,9 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
 
     List<LocalizedItem> translations = [];
 
-    mapping.forEach((id, trans) => translations
-        .add(LocalizedItem(id, trans, getKeyFieldName(id, options))));
+    mapping.forEach((id, trans) =>
+        translations
+            .add(LocalizedItem(id, trans, getKeyFieldName(id, options))));
 
     return translations;
   }
@@ -96,9 +101,6 @@ class FlutterTranslateGen extends AnnotationGenerator<TranslateKeysOptions> {
         return Casing.upperCase(key, separator: options.separator);
       case CaseStyle.lowerCase:
         return Casing.lowerCase(key, separator: options.separator);
-      default:
-        return throw InvalidGenerationSourceError(
-            "Invalid CaseStyle specified: ${options.caseStyle.toString()}");
     }
   }
 
