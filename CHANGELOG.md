@@ -30,3 +30,7 @@
 ## 2.2.0
 
 - Upgraded dependencies
+
+## 3.0.0
+
+- Upgraded dependencies
